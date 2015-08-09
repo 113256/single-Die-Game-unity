@@ -24,4 +24,8 @@ public class Player {
 	public int getChipCount(){
 		return chipCount;
 	}
+
+	public void setChipCount(int value){
+		this.chipCount = value;
+	}
 }

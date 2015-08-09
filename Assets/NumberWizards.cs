@@ -8,8 +8,13 @@ using System.Linq; //collection.Last() method
 public class NumberWizards : MonoBehaviour {
 
 /*
-This is a simple game where you think of a number, and the computer tries to guess it in as
-few tries as possible
+roll 
+1. put 1 chip
+2. put 2 chips
+3. eveybody puts in a chip
+4. take 1 chip
+5. take 2 chips
+6. take all chips, start over
 */
 
 	// Use this for initialization
@@ -38,8 +43,11 @@ few tries as possible
 	
 	//MyQueue queue = new MyQueue();
 	Queue<Player> queue =new Queue<Player>();
+
+	private LevelManager levelManager;
 	
 	void Start () {
+		levelManager = GameObject.FindObjectOfType<LevelManager> ();
 		StartGame();
 	}
 	
@@ -74,7 +82,9 @@ few tries as possible
 		printQueue(queue);
 		queueText.text = queueString;
 		
-
+		if (tableChips < 0) {
+			tableChips = 0;
+		}
 		
 		
 	}
@@ -82,7 +92,10 @@ few tries as possible
 	public void roll(){
 		int random = Random.Range (1, 6);
 
+		//current player
 		Player finishedTurn = queue.Peek();
+		int currentPlayerChipCount = finishedTurn.getChipCount ();
+
 		if(queue.Peek().getisBot()==false){
 			print (queue.Peek().getisBot());
 			actionText.text = "You rolled "+random;
@@ -92,23 +105,54 @@ few tries as possible
 			
 			actionText.text = queue.Peek().getName()+" rolled "+random;
 		}
-		queue.Dequeue();
-		queue.Enqueue (finishedTurn);
+		/*
+roll 
+1. put 1 chip
+2. put 2 chips
+3. eveybody puts in a chip
+4. take 1 chip
+5. take 2 chips
+6. take all chips, start over
+*/
+		switch (random) {
+		case 1:
+			finishedTurn.setChipCount(currentPlayerChipCount-1);
+			tableChips++;
+			break;
+		case 2:
+			finishedTurn.setChipCount(currentPlayerChipCount-2);
+			tableChips+=2;
+			break;
+		case 3:
+			playerOne.setChipCount(playerOne.getChipCount()-1);
+			playerTwo.setChipCount(playerTwo.getChipCount()-1);
+			playerThree.setChipCount(playerThree.getChipCount()-1);
+			playerFour.setChipCount(playerFour.getChipCount()-1);
+			playerFive.setChipCount(playerFive.getChipCount()-1);
 
-		/*switch (random) {
+			tableChips+=5;
+			break;
 		case 4:
-			Four();
+			finishedTurn.setChipCount(currentPlayerChipCount+1);
+			tableChips--;
 			break;
 		case 5:
-			Five ();
+			finishedTurn.setChipCount(currentPlayerChipCount+2);
+			tableChips-=2;
 			break;
 		case 6:
-			Six ();
+			levelManager.loadLevel("Start");
 			break;
 		default:
 			break;
 		
-		}*/
+		}
+
+		queue.Dequeue();
+		//player who finished go to end of queue
+		queue.Enqueue (finishedTurn);
+
+
 	}
 
 
@@ -123,25 +167,7 @@ few tries as possible
 		yield return new WaitForSeconds(3);
 		canCallFunction = true;
 		
-		/*random = Random.Range(1, 15);
-		Player finishedTurn = queue.Peek();
-		if(random%3 ==0){ 
-			//number = number - 6;
-			//actionText.text = "Opponent subtracted 6";
-			
-			Four ();
-		} else if(random%2 ==0) {
-			//number = number - 7;
-			//actionText.text = "Opponent subtracted 7";
-			Five ();
-		} else {
-			//number = number - 7;
-			//actionText.text = "Opponent subtracted 7";
-			Six ();
-		}*/
-		//MyTurn = !MyTurn;
-		//queue.Dequeue();
-		//queue.Enqueue (finishedTurn);
+	
 		roll ();
 	}
 	
