@@ -42,7 +42,7 @@ roll
 	Player playerFive = new Player("player5", true, 5);
 	
 	//MyQueue queue = new MyQueue();
-	Queue<Player> queue =new Queue<Player>();
+	OwnQueue queue =new OwnQueue();
 
 	private LevelManager levelManager;
 	
@@ -79,7 +79,9 @@ roll
 			turns.text = "your turn.";
 		}
 		
-		printQueue(queue);
+		queueString = queue.printQueue();
+		//checkPlayerChips ();
+
 		queueText.text = queueString;
 		
 		if (tableChips < 0) {
@@ -91,13 +93,14 @@ roll
 	//roll
 	public void roll(){
 		int random = Random.Range (1, 6);
+		//int random = 1;
 
 		//current player
 		Player finishedTurn = queue.Peek();
 		int currentPlayerChipCount = finishedTurn.getChipCount ();
 
 		if(queue.Peek().getisBot()==false){
-			print (queue.Peek().getisBot());
+			//print (queue.Peek().getisBot());
 			actionText.text = "You rolled "+random;
 			
 		} 
@@ -115,6 +118,10 @@ roll
 6. take all chips, start over
 */
 		switch (random) {
+		//test case
+		case 0:
+			playerThree.setChipCount(-6);
+			break;
 		case 1:
 			finishedTurn.setChipCount(currentPlayerChipCount-1);
 			tableChips++;
@@ -124,12 +131,10 @@ roll
 			tableChips+=2;
 			break;
 		case 3:
-			playerOne.setChipCount(playerOne.getChipCount()-1);
-			playerTwo.setChipCount(playerTwo.getChipCount()-1);
-			playerThree.setChipCount(playerThree.getChipCount()-1);
-			playerFour.setChipCount(playerFour.getChipCount()-1);
-			playerFive.setChipCount(playerFive.getChipCount()-1);
-
+			foreach(Player player in queue)
+			{
+				player.setChipCount(player.getChipCount()-1); 
+			}
 			tableChips+=5;
 			break;
 		case 4:
@@ -148,11 +153,11 @@ roll
 		
 		}
 
-		queue.Dequeue();
-		//player who finished go to end of queue
-		queue.Enqueue (finishedTurn);
-
-
+		if (!checkPlayerChips ()) {
+			queue.Dequeue ();
+			//player who finished go to end of queue
+			queue.Enqueue (finishedTurn);
+		}
 	}
 
 
@@ -171,15 +176,37 @@ roll
 		roll ();
 	}
 	
-	public static void printQueue(Queue<Player> collection)
+	/*public void printQueue()
 	{
 		queueString = "";
-		foreach(Player player in collection)
+		foreach(Player player in queue)
 		{
+
 			queueString = queueString + "  " + player.getName() + ": "+ player.getChipCount() +"\n"; 
 		}
 	
+	}*/
+
+	public bool checkPlayerChips(){
+		bool playerRemoved = false;
+
+		print ("\nchecking");
+		foreach(Player player in queue)
+		{
+			//print (player.getName() + " has"+ player.getChipCount());
+			if(player.getChipCount()<0){
+				print ("remove "+player.getName() + " with " + player.getChipCount());
+				queue.removePlayer(player);
+				playerRemoved = true;
+			} 
+		}
+		queue.checkQueue ();
+		return playerRemoved;
+		
 	}
+
+
+
 	
 	
 	
