@@ -17,6 +17,8 @@ roll
 6. take all chips, start over
 */
 
+	public bool testMode;
+
 	// Use this for initialization
 	//instance variables
 	//int max;
@@ -71,10 +73,10 @@ roll
 		if(queue.Peek().getisBot()==true)
 		{
 			turns.text = queue.Peek().getName()+" turn, please wait";
+
 			if(canCallFunction){//so that it wont run every frame
-			StartCoroutine(opponentTurn());//but this will run every frame
-			}//print ("opponent done");
-			//StartCoroutine(opponentTurn());
+			StartCoroutine(opponentTurn());//but this will run every frame so we need the if statement above
+			}
 		} else{
 			turns.text = "your turn.";
 		}
@@ -92,8 +94,18 @@ roll
 	}
 	//roll
 	public void roll(){
-		int random = Random.Range (1, 6);
-		//int random = 1;
+		int random = 0;
+
+		if (testMode) {
+			int a = Random.Range (1, 4);
+			if (a == 1)
+				random = -1;
+			else if (a == 2)
+				random = -2;
+			else random = 1;
+		} else {
+			 random = Random.Range(1,6);
+		}
 
 		//current player
 		Player finishedTurn = queue.Peek();
@@ -118,10 +130,15 @@ roll
 6. take all chips, start over
 */
 		switch (random) {
-		//test case
-		case 0:
+		//test cases
+		case -1:
 			playerThree.setChipCount(-6);
 			break;
+		case -2:
+			finishedTurn.setChipCount(currentPlayerChipCount-10);
+			break;
+
+
 		case 1:
 			finishedTurn.setChipCount(currentPlayerChipCount-1);
 			tableChips++;
@@ -153,10 +170,19 @@ roll
 		
 		}
 
-		if (!checkPlayerChips ()) {
-			queue.Dequeue ();
-			//player who finished go to end of queue
-			queue.Enqueue (finishedTurn);
+
+		//if someome wasn't removed  
+		/*if (!checkPlayerChips ()) {
+
+		} else {
+
+		}
+		checkPlayerChips ();*/
+
+		//if person removed isnt at the front
+		if (checkPlayerChips () != 1) {
+			queue.Dequeue();
+			queue.Enqueue(finishedTurn);
 		}
 	}
 
@@ -169,7 +195,7 @@ roll
 	
 		//since update is calling this function it will run every frame, to avoid that we have to use a condition
 		canCallFunction = false;
-		yield return new WaitForSeconds(3);
+		yield return new WaitForSeconds(2);
 		canCallFunction = true;
 		
 	
@@ -187,21 +213,23 @@ roll
 	
 	}*/
 
-	public bool checkPlayerChips(){
-		bool playerRemoved = false;
+	public int checkPlayerChips(){
+		//bool playerRemoved = false;
+		int position = 0;
 
 		print ("\nchecking");
 		foreach(Player player in queue)
 		{
 			//print (player.getName() + " has"+ player.getChipCount());
-			if(player.getChipCount()<0){
+			if(player.getChipCount()<=0){
 				print ("remove "+player.getName() + " with " + player.getChipCount());
-				queue.removePlayer(player);
-				playerRemoved = true;
+				position = queue.removePlayer(player);
+				//playerRemoved = true;
 			} 
 		}
 		queue.checkQueue ();
-		return playerRemoved;
+		//return playerRemoved;
+		return position;
 		
 	}
 

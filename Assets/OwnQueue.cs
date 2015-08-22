@@ -63,7 +63,11 @@ public class OwnQueue : IEnumerable{
 		return front.item;
 	}
 
-	public void removePlayer(Player player){
+	/*
+	return 1 if removing from front
+	return 2 if not front
+	 */
+	public int removePlayer(Player player){
 		Debug.Log ("removing");
 
 		Node current = front;
@@ -74,6 +78,7 @@ public class OwnQueue : IEnumerable{
 			//front = front.next;
 			Debug.Log("front");
 			Dequeue();
+			return 1;
 		} else {
 			while(current.item.getName() != player.getName()){
 
@@ -89,6 +94,7 @@ public class OwnQueue : IEnumerable{
 			Debug.Log(nodeToDelete.next);
 			//rearrange links
 			current.next = nodeToDelete.next;
+			return 2;
 		}
 	}
 
