@@ -27,6 +27,7 @@ roll
 	bool MyTurn;
 	int random;
 	static string queueString;
+	static string scoreString;
 	
 	static bool canCallFunction = true;
 	//int maxGuessesAllowed = 10;
@@ -36,13 +37,15 @@ roll
 	public Text turns;
 	public Text actionText;
 	public Text queueText;
+	public Text scoreBoardText;
 	
-	Player playerOne = new Player("player1", false, 5);
-	Player playerTwo = new Player("player2", true, 5);
-	Player playerThree = new Player("player3", true, 5);
-	Player playerFour = new Player("player4", true, 5);
-	Player playerFive = new Player("player5", true, 5);
+	Player playerOne = new Player("player1", false, 5,0);
+	Player playerTwo = new Player("player2", true, 5,0);
+	Player playerThree = new Player("player3", true, 5,0);
+	Player playerFour = new Player("player4", true, 5,0);
+	Player playerFive = new Player("player5", true, 5,0);
 	
+
 	//MyQueue queue = new MyQueue();
 	OwnQueue queue =new OwnQueue();
 
@@ -57,6 +60,7 @@ roll
 		
 		tableChips = 0;
 		queueString="";
+		scoreString = "";
 		//MyTurn = true;
 		
 		queue.Enqueue(playerOne);
@@ -64,6 +68,23 @@ roll
 		queue.Enqueue(playerThree);
 		queue.Enqueue(playerFour);
 		queue.Enqueue(playerFive);
+
+		playerOne.setScore (PlayerPrefsManager.GetScore1());
+		playerTwo.setScore (PlayerPrefsManager.GetScore2());
+		playerThree.setScore (PlayerPrefsManager.GetScore3());
+		playerFour.setScore (PlayerPrefsManager.GetScore4());
+		playerFive.setScore (PlayerPrefsManager.GetScore5());
+
+		printScore ();
+	}
+
+	public void save(){
+		PlayerPrefsManager.SetScore1 (playerOne.getScore());
+		PlayerPrefsManager.SetScore2 (playerTwo.getScore());
+		PlayerPrefsManager.SetScore3 (playerThree.getScore());
+		PlayerPrefsManager.SetScore4 (playerFour.getScore());
+		PlayerPrefsManager.SetScore5 (playerFive.getScore());
+
 	}
 	
 	// Update is called once per frame
@@ -89,6 +110,9 @@ roll
 		if (tableChips < 0) {
 			tableChips = 0;
 		}
+
+		scoreBoardText.text = scoreString;
+
 		
 		
 	}
@@ -171,18 +195,21 @@ roll
 		}
 
 
-		//if someome wasn't removed  
-		/*if (!checkPlayerChips ()) {
-
-		} else {
-
-		}
-		checkPlayerChips ();*/
+	
 
 		//if person removed isnt at the front
 		if (checkPlayerChips () != 1) {
 			queue.Dequeue();
 			queue.Enqueue(finishedTurn);
+		}
+		printScore ();
+
+	}
+
+	private void printScore(){
+		scoreString = "";
+		foreach(Player player in queue){
+			scoreString  = scoreString + player.getName()+ ": " + player.getScore() + "\n";
 		}
 	}
 
@@ -228,7 +255,8 @@ roll
 			} 
 		}
 		queue.checkQueue ();
-		//return playerRemoved;
+		//position 1 means frnot removed
+		//position 2 means 
 		return position;
 		
 	}
