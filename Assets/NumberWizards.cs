@@ -99,7 +99,7 @@ roll
 			StartCoroutine(opponentTurn());//but this will run every frame so we need the if statement above
 			}
 		} else{
-			turns.text = "your turn.";
+			turns.text = "your turn, click on Roll.";
 		}
 		
 		queueString = queue.printQueue();
@@ -126,7 +126,7 @@ roll
 				random = -1;
 			else if (a == 2)
 				random = -2;
-			else random = 1;
+			else random = -4;
 		} else {
 			 random = Random.Range(1,6);
 		}
@@ -160,6 +160,16 @@ roll
 			break;
 		case -2:
 			finishedTurn.setChipCount(currentPlayerChipCount-10);
+			break;
+		case -3:
+			playerOne.setChipCount(currentPlayerChipCount-10);
+			break;
+		case -4:
+			//playerOne.setChipCount(currentPlayerChipCount-10);
+			playerTwo.setChipCount(currentPlayerChipCount-10);
+			playerThree.setChipCount(currentPlayerChipCount-10);
+			playerFour.setChipCount(currentPlayerChipCount-10);
+			playerFive.setChipCount(currentPlayerChipCount-10);
 			break;
 
 
@@ -197,12 +207,15 @@ roll
 
 	
 
-		//if person removed isnt at the front
+		//if person removed isnt at the front then the person in front can leave the join and join from the back again
 		if (checkPlayerChips () != 1) {
 			queue.Dequeue();
 			queue.Enqueue(finishedTurn);
 		}
 		printScore ();
+		if (queue.checkLength () == 1) {
+			levelManager.loadLevel("Win");
+		}
 
 	}
 
@@ -247,8 +260,14 @@ roll
 		print ("\nchecking");
 		foreach(Player player in queue)
 		{
+
+
 			//print (player.getName() + " has"+ player.getChipCount());
 			if(player.getChipCount()<=0){
+				if(player.getName()=="player1"){
+					print ("LOST");
+					levelManager.loadLevel("Lose");
+				}
 				print ("remove "+player.getName() + " with " + player.getChipCount());
 				position = queue.removePlayer(player);
 				//playerRemoved = true;

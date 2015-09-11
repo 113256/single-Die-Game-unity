@@ -5,7 +5,7 @@ using System.Collections;
 public class OwnQueue : IEnumerable{
 	
 		
-		
+	private int length;
 		
 		private Node front = null;//points to front
 		private Node back = null;//points to back (2 so that cost of both enqueueing and dequeueing will be O(1))
@@ -108,6 +108,17 @@ public class OwnQueue : IEnumerable{
 		}
 		return queueString;
 		
+	}
+
+	public int checkLength(){
+		length = 0;
+		Node current = front;
+		while(current!=null){
+			length +=1;
+			current = current.next;
+		}
+		Debug.Log ("length is " + length);
+		return length;
 	}
 
 	public void checkQueue(){
