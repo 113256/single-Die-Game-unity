@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//ienumerable and ienumerator interface to make it usable in a foreach statement
+//ienumerable and ienumerator intesrface to make it usable in a foreach statement
 public class OwnQueue : IEnumerable{
 	
 		
